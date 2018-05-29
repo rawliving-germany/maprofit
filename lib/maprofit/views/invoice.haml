@@ -1,0 +1,137 @@
+%h1 Home
+
+%h2 Options
+%form(method="post")
+  .field.is-horizontal
+    .field-label
+      %label.label
+        Ignore zero cost
+    .field-body
+      .field
+        .control
+          %label.checkbox
+            %input{type: "checkbox", name: "ignore_zero_cost", value: "ignore_zero_cost", checked: !!(@calculation_conf&.ignore_zero_cost)}
+  -#.field.is-horizontal
+  -#  .field-label
+  -#    %label.label
+  -#      Attribute ID of ek_netto
+  -#  .field-body
+  -#    .field
+  -#      .control
+  -#        %input.input(type="text" name="ek_netto_attribute_id")
+  .field.is-horizontal
+    .field-label
+      %label.label
+        If shipping cost is 0, subtract ... from profit
+    .field-body
+      .field
+        .control
+          %input.input(type="text" name="free_shipping_penalty" value="#{@calculation_conf&.free_shipping_penalty}")
+  .field.is-horizontal
+    .field-label
+      %label.label
+        Rate GBP - EUR
+    .field-body
+      .field
+        .control
+          %input.input(type="text" name="rate_gbp_eur" value="#{@calculation_conf&.rate_gbp_eur}")
+  .field.is-horizontal
+    .field-label
+    .field-body
+      .field
+        .control
+          %button.button(type="submit") Send
+
+%br
+%br
+
+%h4 Invoiced Items
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th Bought (net)
+      %th Sold (net)
+      %th Bought (brut)
+      %th Tax
+      %th Discount
+      %th Message
+      %th Profit (net/%)
+  %tbody
+    - @invoice.items.each do |item|
+      - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
+        - next
+      %tr
+        %td
+          = item.name
+        %td
+          = item.bought_for_netto.round(2)
+        %td
+          = item.sold_for_netto
+        %td
+          = item.sold_for_brutto
+        %td
+          tbd
+          = item.tax_class
+        %td
+          tbd
+          = item.discount
+        %td
+          = item.msgs.join(" - ")
+        %td
+          = item.profit_netto.round(2)
+          - if !item.profit_netto_percent.infinite? && !item.profit_netto_percent.nan?
+            = "(#{item.profit_netto_percent.round(0)}\%)"
+    - @invoice.items.each do |item|
+      - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
+        %tr.has-background-warning
+          %td
+            = item.name
+          %td
+            = item.bought_for_netto.round(2)
+          %td
+            = item.sold_for_netto
+          %td
+            = item.sold_for_brutto
+          %td
+            tbd
+            = item.tax_class
+          %td
+            tbd
+            = item.discount
+          %td
+            = item.msgs.join(" - ")
+          %td
+%h4 Shipping Cost
+= @invoice.shipping_costs_netto
+€
+%br
+%br
+
+%h4 Messages regarding calculation
+tdb
+Quite usually there will be items with cost of '0' or similar problems
+%br
+%br
+
+%h4 Total Profit
+Invoiced:
+%b= @invoice.grand_total.to_f
+€
+%br
+
+Profit:
+- profit = @invoice.items.inject(0.0) do |sum, item|
+  - if item.bought_for_netto.to_f != 0
+    - sum + item.profit_netto.round(2)
+  - else
+    - sum
+- if @invoice.shipping_costs_netto.to_f == 0.0
+  - profit -= @calculation_conf&.free_shipping_penalty.to_f
+  (shipping penalty #{@calculation_conf&.free_shipping_penalty.to_f} €)
+  %br
+%b.is-large
+  = profit.round(2)
+  €
+%br
