@@ -3,13 +3,24 @@ require 'awesome_print'
 module Maprofit::Magento
   class Factory
 
+    def self.invoices_between start_date, end_date, calculation_conf=nil, &block
+      invoices_sql = Maprofit::Magento::SQL.sales_invoice_between start_date, end_date
+      invoices_sql.each do |invoice_sql|
+        puts " a invoice"
+        invoice = invoice_from_sql_result invoice_sql
+
+        items_for_order(invoice_sql['order_id']).each do |item|
+          invoice.add_item item
+        end
+        yield invoice
+      end
+    end
+
     def self.invoice invoice_nr, calculation_conf=nil
       invoice_sql = Maprofit::Magento::SQL.sales_invoice invoice_nr
       invoice_sql = invoice_sql.first
 
-      invoice = Maprofit::Magento::Invoice.new(
-        shipping_costs_netto: invoice_sql['base_shipping_incl_tax'].to_f,
-        grand_total: invoice_sql['base_grand_total'].to_f)
+      invoice = invoice_from_sql_result invoice_sql
 
       items_for_order(invoice_sql['order_id']).each do |item|
         invoice.add_item item
@@ -63,6 +74,16 @@ module Maprofit::Magento
         )
         item
       end
+    end
+
+    def self.invoice_from_sql_result invoice_sql
+      Maprofit::Magento::Invoice.new(
+        shipping_costs_netto: invoice_sql['base_shipping_incl_tax'].to_f,
+        grand_total:          invoice_sql['base_grand_total'].to_f,
+        date:                 invoice_sql['created_at'],
+        invoice_id:           invoice_sql['entity_id'],
+        invoice_nr:           invoice_sql['increment_id']
+      )
     end
   end
 end
