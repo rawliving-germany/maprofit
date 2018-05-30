@@ -62,9 +62,16 @@
       - @invoice = invoice
       = partial 'invoice_in_list'
     %tr
-      %td(colspan=8)
-        - profit_calc = Maprofit::ProfitCalculation.new
-        = euro profit_calc.calculate_many(@invoices)
+      %td
+        = @invoices.length
+      %td
+      %td
+        = euro @invoices.inject(0.0){|sum,invoice| sum += invoice.grand_total}
+      %td(colspan)
+        %b.is-large.has-text-danger.has-text-right
+          - profit_calc = Maprofit::ProfitCalculation.new
+          = euro profit_calc.calculate_many(@invoices)
+      %td(colspan=4)
 
 -##invoices
 -#
