@@ -6,15 +6,18 @@ require "maprofit/magento/factory"
 require "maprofit/calculation_configuration"
 require "maprofit/magento_configuration"
 require "maprofit/profit_calculation"
+require "maprofit/app_configuration"
 
 module Maprofit
   @magento_conf = nil
   @calculation_conf = nil
+  @app_conf = nil
 
   def self.load_conf
-    if !@magento_conf.nil? && !@calculation_conf.nil?
-      return { magento_conf: @magento_conf, calculation_conf: @calculation_conf }
+    if !@magento_conf.nil? && !@calculation_conf.nil? && !@app_conf.nil?
+      return { magento_conf: @magento_conf, calculation_conf: @calculation_conf, app_conf: @app_conf}
     end
+
     conf = YAML.load_file('maprofit.yaml')
     @magento_conf ||= Maprofit::MagentoConfiguration.new(
       dbhost: conf["host"],
@@ -30,9 +33,12 @@ module Maprofit
       rate_gbp_eur:     conf['rate_gbp_eur'],
       free_shipping_penalty: conf['free_shipping_penalty']
     )
-    return { magento_conf: @magento_conf, calculation_conf: @calculation_conf }
+    @app_conf ||= Maprofit::AppConfiguration.new(
+      basic_auth_pass: conf['basic_auth_pass'],
+      basic_auth_user: conf['basic_auth_user']
+    )
+    return { magento_conf: @magento_conf, calculation_conf: @calculation_conf, app_conf: @app_conf}
     # default params
-    # db
     # logging
   end
 
@@ -42,5 +48,9 @@ module Maprofit
 
   def self.calculation_conf
     @calculation_conf ||= load_conf[:calculation_conf]
+  end
+
+  def self.app_conf
+    @app_conf ||= load_conf[:app_conf]
   end
 end

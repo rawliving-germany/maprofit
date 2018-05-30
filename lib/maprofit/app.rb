@@ -21,7 +21,11 @@ class App < Roda
   plugin :partials
   plugin :all_verbs
   plugin :error_handler
-  plugin :basic_auth, authenticator: proc {|_, pass| pass == 'pass' }, realm: 'maprof'
+  if Maprofit::app_conf.basic_auth_pass && Maprofit::app_conf.basic_auth_user
+    plugin :basic_auth, authenticator: proc {|user, pass| user == Maprofit::app_conf.basic_auth_user && pass == Maprofit::app_conf.basic_auth_pass  }, realm: 'maprof'
+  else
+    STDERR.puts "Basic auth not configured"
+  end
   # plugin :static, ['/uploads'] if APP_ENV == "development"
   plugin :public, root: 'lib/maprofit/public/'
   plugin :partials, views: 'lib/maprofit/views/'
@@ -33,6 +37,7 @@ class App < Roda
   route do |r|
     r.assets
     r.public
+    r.basic_auth
 
     r.root {
       view 'index'
