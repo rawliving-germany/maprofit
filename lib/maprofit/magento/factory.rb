@@ -69,6 +69,7 @@ module Maprofit::Magento
           sold_for_netto:   item_sql['base_row_total'].to_f,
           sold_for_brutto:  item_sql['base_row_total_incl_tax'].to_f,
           name:             item_sql['name'],
+          qty:              item_sql['qty'].to_i,
           msgs:             msgs
         )
 

@@ -4,7 +4,7 @@ module Maprofit::Magento
   class Item
     #attr_initialize :bought_for_netto
     #rattr_initialize [:bought_for_netto, :sold_for_netto, :sold_for_brutto, :tax_class, :discount, :name]
-    aattr_initialize [:bought_for_netto, :sold_for_netto, :sold_for_brutto, :tax_class, :discount, :name, :msgs]
+    aattr_initialize [:bought_for_netto, :sold_for_netto, :sold_for_brutto, :tax_class, :discount, :name, :msgs, :qty]
 
     def profit_netto
       @sold_for_netto - @bought_for_netto

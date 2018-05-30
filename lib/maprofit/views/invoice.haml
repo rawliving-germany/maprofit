@@ -58,6 +58,7 @@
       %th Bought (net)
       %th Sold (net)
       %th Sold (brut)
+      %th Qty
       %th Tax
       %th Discount
       %th Message
@@ -75,6 +76,8 @@
           = euro item.sold_for_netto
         %td.has-text-right
           = euro item.sold_for_brutto
+        %td.has-text-right
+          = item.qty
         %td
           tbd
           = euro item.tax_class
