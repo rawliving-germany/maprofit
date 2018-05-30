@@ -59,6 +59,38 @@ class App < Roda
         view 'invoice'
       end
     }
+    r.on("invoices") {
+        @calculation_conf = Maprofit::calculation_conf
+        if !r.params.key?('ignore_zero_cost')
+          @calculation_conf.ignore_zero_cost = false
+        end
+        if r.params.key?('rate_gbp_eur')
+          @calculation_conf.rate_gbp_eur = r.params['rate_gbp_eur']
+        end
+        if r.params.key?('free_shipping_penalty')
+          @calculation_conf.free_shipping_penalty = r.params['free_shipping_penalty']
+        end
+
+      r.is do
+        r.get do
+          @invoices = []
+          Maprofit::Magento::Factory.invoices_between('2017-11-12', '2017-11-13') {|i| @invoices << i}
+          view 'invoices'
+        end
+      end
+      r.get String do |date|
+        stream do |out|
+          Maprofit::Magento::Factory.invoices_between('2017-11-12', '2017-11-13') do |invoice|
+            @invoice = invoice
+            out << partial('invoice_in_list')
+          #@invoices.each do |invoice|
+          #  out << partial('invoice_in_list')
+          #  sleep 2
+          #end
+          end
+        end
+      end
+    }
   end
 
   not_found do

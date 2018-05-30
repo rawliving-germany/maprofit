@@ -1,4 +1,8 @@
-%h1 Home
+%h1 Single Invoice
+
+%a{href: magento_admin_url_for("/sales/order_invoice/view/invoice_id/#{@invoice.invoice_id}")}
+  = @invoice.invoice_nr
+  (in magento)
 
 %h2 Options
 %form(method="post")
@@ -53,7 +57,7 @@
       %th Name
       %th Bought (net)
       %th Sold (net)
-      %th Bought (brut)
+      %th Sold (brut)
       %th Tax
       %th Discount
       %th Message
@@ -65,23 +69,24 @@
       %tr
         %td
           = item.name
-        %td
-          = item.bought_for_netto.round(2)
-        %td
-          = item.sold_for_netto
-        %td
-          = item.sold_for_brutto
-        %td
-          tbd
-          = item.tax_class
+        %td.has-text-right
+          = euro item.bought_for_netto.round(2)
+        %td.has-text-right
+          = euro item.sold_for_netto
+        %td.has-text-right
+          = euro item.sold_for_brutto
         %td
           tbd
-          = item.discount
+          = euro item.tax_class
+        %td
+          tbd
+          = euro item.discount
         %td
           = item.msgs.join(" - ")
-        %td
-          = item.profit_netto.round(2)
+        %td.has-text-right
+          %b= euro item.profit_netto.round(2)
           - if !item.profit_netto_percent.infinite? && !item.profit_netto_percent.nan?
+            %br
             = "(#{item.profit_netto_percent.round(0)}\%)"
     - @invoice.items.each do |item|
       - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
@@ -89,23 +94,22 @@
           %td
             = item.name
           %td
-            = item.bought_for_netto.round(2)
+            = euro item.bought_for_netto.round(2)
           %td
-            = item.sold_for_netto
+            = euro item.sold_for_netto
           %td
-            = item.sold_for_brutto
-          %td
-            tbd
-            = item.tax_class
+            = euro item.sold_for_brutto
           %td
             tbd
-            = item.discount
+            = euro item.tax_class
+          %td
+            tbd
+            = euro item.discount
           %td
             = item.msgs.join(" - ")
           %td
 %h4 Shipping Cost
-= @invoice.shipping_costs_netto
-€
+= euro @invoice.shipping_costs_netto
 %br
 %br
 
@@ -117,8 +121,7 @@ Quite usually there will be items with cost of '0' or similar problems
 
 %h4 Total Profit
 Invoiced:
-%b= @invoice.grand_total.to_f
-€
+%b= euro @invoice.grand_total.to_f
 %br
 
 Profit:
@@ -132,6 +135,5 @@ Profit:
   (shipping penalty #{@calculation_conf&.free_shipping_penalty.to_f} €)
   %br
 %b.is-large
-  = profit.round(2)
-  €
+  = euro profit.round(2)
 %br
