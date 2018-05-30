@@ -51,7 +51,7 @@ module Maprofit::Magento
             eknetto_db = 0.0
           end
 
-          msgs << '(eknetto)'
+          msgs << "(eknetto #{eknetto_db})"
           bought_for_netto = eknetto_db * item_sql['qty'].to_f
         else
           bought_for_netto = bought_for_netto.to_f * item_sql['qty'].to_f
@@ -59,19 +59,22 @@ module Maprofit::Magento
           if Maprofit::calculation_conf&.rate_gbp_eur
             bought_for_netto *= Maprofit::calculation_conf.rate_gbp_eur.to_f
           end
-          msgs << 'price scaled from gbp'
-          msgs << item_sql['base_cost'].to_f
+          msgs << "(gbp #{item_sql['base_cost'].to_f})"
         end
 
         #ap item
 
         item = Item.new(
           bought_for_netto: bought_for_netto,
-          sold_for_netto:  item_sql['base_row_total'].to_f,
-          sold_for_brutto: item_sql['base_row_total_incl_tax'].to_f,
-          name:            item_sql['name'],
-          msgs:            msgs
+          sold_for_netto:   item_sql['base_row_total'].to_f,
+          sold_for_brutto:  item_sql['base_row_total_incl_tax'].to_f,
+          name:             item_sql['name'],
+          msgs:             msgs
         )
+
+        if item.profit_netto <= 0
+          item.msgs << "LOSS!"
+        end
         item
       end
     end

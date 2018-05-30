@@ -78,6 +78,11 @@ class App < Roda
           view 'invoices'
         end
       end
+      r.get "today" do
+          @invoices = []
+          Maprofit::Magento::Factory.invoices_between(Date.today.strftime("%Y-%m-%d"), (Date.today + 1).strftime("%Y-%m-%d")) {|i| @invoices << i}
+          view 'invoices'
+      end
       r.get String do |date|
         stream do |out|
           Maprofit::Magento::Factory.invoices_between('2017-11-12', '2017-11-13') do |invoice|

@@ -1,3 +1,5 @@
+require 'date'
+
 module Maprofit
   module ViewHelpers
     # def labelize(string)
@@ -15,6 +17,11 @@ module Maprofit
 
     def magento_admin_url_for further_path
       Maprofit::magento_conf.magento_admin_url + further_path
+    end
+
+    def date d
+      #DateTime.parse(d).strftime("%Y-%m-%d %a %H:%M")
+      d.strftime("%Y-%m-%d %a %H:%M")
     end
   end
 end

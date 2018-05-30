@@ -5,6 +5,7 @@ require "maprofit/magento/sql"
 require "maprofit/magento/factory"
 require "maprofit/calculation_configuration"
 require "maprofit/magento_configuration"
+require "maprofit/profit_calculation"
 
 module Maprofit
   @magento_conf = nil

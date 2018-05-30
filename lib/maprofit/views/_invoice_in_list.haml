@@ -1,0 +1,13 @@
+%tr
+  %td
+    %a{href: magento_admin_url_for("/sales/order_invoice/view/invoice_id/#{@invoice.invoice_id}/")}
+      = @invoice.invoice_nr
+    = @invoice.items.length
+  %td
+    = date @invoice.date
+  %td
+    = @invoice.grand_total
+  %td
+    %b.is-large
+      %a(href="/invoice/#{@invoice.invoice_nr}")
+        = euro Maprofit::ProfitCalculation.new.calculate(@invoice)
