@@ -1,0 +1,10 @@
+host: mydbhost.tld
+port: 3306
+database: mymagento2db
+username: mymagento2dbuser
+password: mymagento2dbpass
+rate_gbp_eur: 1.149
+free_shipping_penalty: 10
+eknetto_attr_id: 1001
+ignore_zero_cost: true
+magento_admin_url: "https://myshophost.tld/admin/"
