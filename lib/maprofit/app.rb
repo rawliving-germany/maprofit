@@ -24,6 +24,8 @@ class App < Roda
   plugin :basic_auth, authenticator: proc {|_, pass| pass == 'pass' }, realm: 'maprof'
   # plugin :static, ['/uploads'] if APP_ENV == "development"
   plugin :public, root: 'lib/maprofit/public/'
+  plugin :partials, views: 'lib/maprofit/views/'
+  plugin :streaming
 
   include Maprofit::RodaUtils
   include Maprofit::ViewHelpers
