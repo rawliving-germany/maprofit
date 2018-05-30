@@ -64,7 +64,7 @@
     %tr
       %td(colspan=8)
         - profit_calc = Maprofit::ProfitCalculation.new
-        = euro @invoices.map{|i| profit_calc.calculate(i)}.sum
+        = euro profit_calc.calculate_many(@invoices)
 
 -##invoices
 -#

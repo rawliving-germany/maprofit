@@ -15,5 +15,11 @@ module Maprofit
 
       profit
     end
+
+    def calculate_many invoices
+      profit = invoices.inject(0.0) do |sum, invoice|
+        sum += calculate(invoice)
+      end
+    end
   end
 end

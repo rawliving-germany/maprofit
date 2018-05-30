@@ -8,3 +8,6 @@ free_shipping_penalty: 10
 eknetto_attr_id: 1001
 ignore_zero_cost: true
 magento_admin_url: "https://myshophost.tld/admin/"
+basic_auth_user: bauser
+basic_auth_pass: bapass
+
