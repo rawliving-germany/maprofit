@@ -21,7 +21,8 @@ module Maprofit
       dbname: conf["database"],
       dbuser: conf["username"],
       dbpass: conf["password"],
-      eknetto_attr_id: conf["eknetto_attr_id"]
+      eknetto_attr_id:   conf["eknetto_attr_id"],
+      magento_admin_url: conf["magento_admin_url"]
     )
     @calculation_conf ||= Maprofit::CalculationConfiguration.new(
       ignore_zero_cost: conf['ignore_zero_cost'],
