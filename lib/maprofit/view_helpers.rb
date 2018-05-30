@@ -7,5 +7,10 @@ module Maprofit
     def hello
       "hello helper"
     end
+
+    def euro number
+      return "-" if number.nil?
+      "%.2f €" % number
+    end
   end
 end
