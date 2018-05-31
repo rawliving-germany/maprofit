@@ -1,0 +1,27 @@
+%tr(class=row_class)
+  %td
+    = item.name
+  %td.has-text-right
+    = euro item.bought_for_netto.round(2)
+  %td.has-text-right
+    = euro item.sold_for_netto
+  %td.has-text-right
+    = euro item.sold_for_brutto
+  %td.has-text-right
+    = item.qty
+  %td
+    tbd
+    = euro item.tax_class
+  %td
+    tbd
+    = euro item.discount
+  %td
+    - item.msgs.each do |msg|
+      = msg
+      %br
+  %td.has-text-right
+    %b= euro item.profit_netto.round(2)
+    - if !item.profit_netto_percent.infinite? && !item.profit_netto_percent.nan?
+      %br
+      = "(#{item.profit_netto_percent.round(0)}\%)"
+
