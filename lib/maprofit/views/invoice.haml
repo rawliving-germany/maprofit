@@ -1,50 +1,36 @@
 %h1 Single Invoice
 
-%a{href: magento_admin_url_for("/sales/order_invoice/view/invoice_id/#{@invoice.invoice_id}")}
-  = @invoice.invoice_nr
-  (in magento)
-
-%h2 Options
-%form(method="post")
-  .field.is-horizontal
-    .field-label
-      %label.label
-        Ignore zero cost
-    .field-body
-      .field
-        .control
-          %label.checkbox
-            %input{type: "checkbox", name: "ignore_zero_cost", value: "ignore_zero_cost", checked: !!(@calculation_conf&.ignore_zero_cost)}
-  -#.field.is-horizontal
-  -#  .field-label
-  -#    %label.label
-  -#      Attribute ID of ek_netto
-  -#  .field-body
-  -#    .field
-  -#      .control
-  -#        %input.input(type="text" name="ek_netto_attribute_id")
-  .field.is-horizontal
-    .field-label
-      %label.label
-        If shipping cost is 0, subtract ... from profit
-    .field-body
-      .field
-        .control
+.columns
+  .column
+    %a{href: magento_admin_url_for("/sales/order_invoice/view/invoice_id/#{@invoice.invoice_id}"), target:"_blank"}
+      = @invoice.invoice_nr
+      (in magento)
+    %br
+    Date: #{date @invoice.date}
+    %a
+      link to order
+    %br
+    Grand Total
+    %b= euro @invoice.grand_total.to_f
+    %br
+    Profit
+  .column
+    %form(method="post")
+      %nav.panel
+        .panel-heading
+          %h2 Options
+        %label.panel-block
+          %input{type: "checkbox", name: "ignore_zero_cost", value: "ignore_zero_cost", checked: !!(@calculation_conf.ignore_zero_cost)}
+          Ignore zero cost
+        %label.panel-block
+          Shipping penalty
           %input.input(type="text" name="free_shipping_penalty" value="#{@calculation_conf&.free_shipping_penalty}")
-  .field.is-horizontal
-    .field-label
-      %label.label
-        Rate GBP - EUR
-    .field-body
-      .field
-        .control
+        %label.panel-block
+          Rate GBP - EUR
           %input.input(type="text" name="rate_gbp_eur" value="#{@calculation_conf&.rate_gbp_eur}")
-  .field.is-horizontal
-    .field-label
-    .field-body
-      .field
-        .control
-          %button.button(type="submit") Send
+        .panel-block
+          %button.button.is-fullwidth(type="submit") Update
+
 
 %br
 %br
@@ -78,8 +64,16 @@
 %br
 
 %h4 Messages regarding calculation
-tdb
-Quite usually there will be items with cost of '0' or similar problems
+.has-text-danger
+  %ul
+    %li
+      tdb
+    %li
+      Quite usually there will be items with cost of '0' or similar problems
+    %li
+      shipping penalty?
+    %li
+      0-cost items?
 %br
 %br
 
@@ -89,15 +83,6 @@ Invoiced:
 %br
 
 Profit:
-- profit = @invoice.items.inject(0.0) do |sum, item|
-  - if item.bought_for_netto.to_f != 0
-    - sum + item.profit_netto.round(2)
-  - else
-    - sum
-- if @invoice.shipping_costs_netto.to_f == 0.0
-  - profit -= @calculation_conf&.free_shipping_penalty.to_f
-  (shipping penalty #{@calculation_conf&.free_shipping_penalty.to_f} €)
-  %br
 %b.is-large
-  = euro profit.round(2)
+  = euro Maprofit::ProfitCalculation.new.calculate(@invoice)
 %br
