@@ -45,21 +45,13 @@ class App < Roda
 
     r.on("invoice") {
       # /invoice/INVOICENR (increment, not entity_id)
+      @calculation_conf = Maprofit::ParamMapping::calculation_conf(r.params)
+
       r.get String do |invoice_nr|
         @invoice = Maprofit::Magento::Factory.invoice invoice_nr
         view 'invoice'
       end
       r.post String do |invoice_nr|
-        @calculation_conf = Maprofit::calculation_conf
-        if !r.params.key?('ignore_zero_cost')
-          @calculation_conf.ignore_zero_cost = false
-        end
-        if r.params.key?('rate_gbp_eur')
-          @calculation_conf.rate_gbp_eur = r.params['rate_gbp_eur']
-        end
-        if r.params.key?('free_shipping_penalty')
-          @calculation_conf.free_shipping_penalty = r.params['free_shipping_penalty']
-        end
         @invoice = Maprofit::Magento::Factory.invoice invoice_nr, @calculation_conf
         view 'invoice'
       end

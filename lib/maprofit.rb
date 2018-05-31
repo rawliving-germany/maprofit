@@ -7,6 +7,7 @@ require "maprofit/calculation_configuration"
 require "maprofit/magento_configuration"
 require "maprofit/profit_calculation"
 require "maprofit/app_configuration"
+require "maprofit/param_mapping"
 
 module Maprofit
   @magento_conf = nil
