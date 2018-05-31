@@ -1,5 +1,7 @@
 %tr
   %td
+    -# no its sales-invoice ...
+    -# https://raw-living.de/rawadmin/sales/invoice/view/invoice_id/46559/
     %a{href: magento_admin_url_for("/sales/invoice/view/invoice_id/#{@invoice.invoice_id}/")}
       = @invoice.invoice_nr
     = @invoice.items.length

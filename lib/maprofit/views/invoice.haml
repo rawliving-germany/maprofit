@@ -67,50 +67,11 @@
     - @invoice.items.each do |item|
       - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
         - next
-      %tr
-        %td
-          = item.name
-        %td.has-text-right
-          = euro item.bought_for_netto.round(2)
-        %td.has-text-right
-          = euro item.sold_for_netto
-        %td.has-text-right
-          = euro item.sold_for_brutto
-        %td.has-text-right
-          = item.qty
-        %td
-          tbd
-          = euro item.tax_class
-        %td
-          tbd
-          = euro item.discount
-        %td
-          = item.msgs.join(" - ")
-        %td.has-text-right
-          %b= euro item.profit_netto.round(2)
-          - if !item.profit_netto_percent.infinite? && !item.profit_netto_percent.nan?
-            %br
-            = "(#{item.profit_netto_percent.round(0)}\%)"
+      = partial('invoice_item_in_list', locals: {item: item, row_class:''})
     - @invoice.items.each do |item|
       - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
-        %tr.has-background-warning
-          %td
-            = item.name
-          %td
-            = euro item.bought_for_netto.round(2)
-          %td
-            = euro item.sold_for_netto
-          %td
-            = euro item.sold_for_brutto
-          %td
-            tbd
-            = euro item.tax_class
-          %td
-            tbd
-            = euro item.discount
-          %td
-            = item.msgs.join(" - ")
-          %td
+        = partial('invoice_item_in_list', locals: {item: item, row_class:'has-background-warning'})
+
 %h4 Shipping Cost
 = euro @invoice.shipping_costs_netto
 %br
