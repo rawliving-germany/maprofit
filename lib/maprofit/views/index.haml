@@ -1,3 +1,20 @@
 %h1 Home
 
-There is no browsing invoices as of yet.
+.columns
+  .column
+    .box
+      %a(href="/invoices/today")
+        Index/today
+  .column
+    .box
+      %form(action="invoice" method="get")
+        .field
+          .control
+            %input.input(type="text" name="invoice_nr")
+        .field
+          .control
+            %button.button(type="submit") Single Invoice
+  .column
+    .box
+      Options/Check
+
