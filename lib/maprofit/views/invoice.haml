@@ -55,14 +55,14 @@
   %thead
     %tr
       %th Name
-      %th Bought (net)
-      %th Sold (net)
-      %th Sold (brut)
-      %th Qty
+      %th.has-text-right Bought (net)
+      %th.has-text-right Sold (net)
+      %th.has-text-right Sold (brut)
+      %th.has-text-right Qty
       %th Tax
       %th Discount
       %th Message
-      %th Profit (net/%)
+      %th.has-text-right Profit (net/%)
   %tbody
     - @invoice.items.each do |item|
       - if @calculation_conf&.ignore_zero_cost && item.bought_for_netto.to_f == 0.0
