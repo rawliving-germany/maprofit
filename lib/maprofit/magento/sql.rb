@@ -42,7 +42,7 @@ module Maprofit::Magento
       query = client.prepare(
         "
          SELECT * FROM sales_invoice
-         WHERE increment_id = '?'
+         WHERE increment_id = ?
         "
       )
       query.execute invoice_nr
