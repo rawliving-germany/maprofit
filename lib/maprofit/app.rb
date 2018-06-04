@@ -43,6 +43,34 @@ class App < Roda
       view 'index'
     }
 
+    r.on("orders") {
+      # /orders/today
+      @calculation_conf = Maprofit::ParamMapping::calculation_conf(r.params)
+      r.get "today" do
+        @invoices = []
+        Maprofit::Magento::OrderFactory.orders_between(Date.today.strftime("%Y-%m-%d"), (Date.today + 1).strftime("%Y-%m-%d")) {|i| @invoices << i}
+        view 'invoices'
+      end
+      r.is do
+        @invoices = []
+        Maprofit::Magento::OrderFactory.orders_between(@calculation_conf.start_date, @calculation_conf.end_date) {|i| @invoices << i}
+        view 'invoices'
+      end
+    }
+    r.on("order") {
+      # /order/ORDERID (entity_id)
+      @calculation_conf = Maprofit::ParamMapping::calculation_conf(r.params)
+
+      r.get String do |order_id|
+        @invoice = Maprofit::Magento::OrderFactory.invoice order_id
+        view 'invoice'
+      end
+      r.post String do |order_id|
+        @invoice = Maprofit::Magento::OrderFactory.invoice order_id, @calculation_conf
+        view 'invoice'
+      end
+    }
+
     r.on("invoice") {
       # /invoice/INVOICENR (increment, not entity_id)
       @calculation_conf = Maprofit::ParamMapping::calculation_conf(r.params)
