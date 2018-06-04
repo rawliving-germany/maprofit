@@ -1,45 +1,36 @@
 %h1 Invoices
 
-%h2 Options 
-+ date range
-
-
-
-%form(method="post")
-  .field.is-horizontal.has-text-danger
-    .field-label
-      %label.label
-        Ignore zero cost
-    .field-body
-      .field
-        .control
-          %label.checkbox
-            %input{type: "checkbox", name: "ignore_zero_cost", value: "ignore_zero_cost", checked: !!(@calculation_conf&.ignore_zero_cost)}
-  .field.is-horizontal
-    .field-label
-      %label.label
-        If shipping cost is 0, subtract ... from profit
-    .field-body
-      .field
-        .control
+.columns
+  .column
+    Summary
+  .column
+    %form(method="post")
+      %nav.panel
+        .panel-heading
+          %h3 Options
+        %label.panel-block
+          %input{type: "checkbox", name: "ignore_zero_cost", value: "ignore_zero_cost", checked: !!(@calculation_conf.ignore_zero_cost)}
+          Ignore zero cost
+        %label.panel-block
+          Shipping penalty
           %input.input(type="text" name="free_shipping_penalty" value="#{@calculation_conf&.free_shipping_penalty}")
-  .field.is-horizontal
-    .field-label
-      %label.label
-        Rate GBP - EUR
-    .field-body
-      .field
-        .control
+        %label.panel-block
+          Rate GBP - EUR
           %input.input(type="text" name="rate_gbp_eur" value="#{@calculation_conf&.rate_gbp_eur}")
-  .field.is-horizontal
-    .field-label
-    .field-body
-      .field
-        .control
-          %button.button(type="submit") Send
+        %label.panel-block
+          Start Date
+          %input.input#start_date(type="text" name="start_date" value="#{@calculation_conf.start_date}")
+        %label.panel-block
+          End Date
+          %input.input#end_date(type="text" name="end_date" value="#{@calculation_conf.end_date}")
+        .panel-block
+          %button.button.is-fullwidth(type="submit") Update
 
 %br
 %br
+:javascript
+  flatpickr("#start_date", {});
+  flatpickr("#end_date", {});
 
 
 %h4 Invoiced Invoices

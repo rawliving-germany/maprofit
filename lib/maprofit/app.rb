@@ -59,17 +59,16 @@ class App < Roda
     r.on("invoices") {
       @calculation_conf = Maprofit::ParamMapping::calculation_conf(r.params)
 
+      # POST/GET /invoices
       r.is do
-        r.get do
-          @invoices = []
-          Maprofit::Magento::Factory.invoices_between('2017-11-12', '2017-11-13') {|i| @invoices << i}
-          view 'invoices'
-        end
+        @invoices = []
+        Maprofit::Magento::Factory.invoices_between(@calculation_conf.start_date, @calculation_conf.end_date) {|i| @invoices << i}
+        view 'invoices'
       end
       r.get "today" do
-          @invoices = []
-          Maprofit::Magento::Factory.invoices_between(Date.today.strftime("%Y-%m-%d"), (Date.today + 1).strftime("%Y-%m-%d")) {|i| @invoices << i}
-          view 'invoices'
+        @invoices = []
+        Maprofit::Magento::Factory.invoices_between(Date.today.strftime("%Y-%m-%d"), (Date.today + 1).strftime("%Y-%m-%d")) {|i| @invoices << i}
+        view 'invoices'
       end
       r.get String do |date|
         stream do |out|

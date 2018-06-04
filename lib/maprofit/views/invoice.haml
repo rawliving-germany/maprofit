@@ -28,6 +28,12 @@
         %label.panel-block
           Rate GBP - EUR
           %input.input(type="text" name="rate_gbp_eur" value="#{@calculation_conf&.rate_gbp_eur}")
+        %label.panel-block
+          Start Date
+          %input.input#start_date(type="text" name="start_date" value="#{@calculation_conf.start_date}")
+        %label.panel-block
+          End Date
+          %input.input#end_date(type="text" name="end_date" value="#{@calculation_conf.end_date}")
         .panel-block
           %button.button.is-fullwidth(type="submit") Update
 
