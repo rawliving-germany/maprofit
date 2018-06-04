@@ -5,15 +5,21 @@ module Maprofit::Magento
 
     def self.invoices_between start_date, end_date, calculation_conf=nil, &block
       invoices_sql = Maprofit::Magento::SQL.sales_invoice_between start_date, end_date
+
+      invoices = []
+
       invoices_sql.each do |invoice_sql|
         puts " a invoice"
         invoice = invoice_from_sql_result invoice_sql
 
-        items_for_order(invoice_sql['order_id']).each do |item|
+        invoice_items_for_order(invoice_sql['order_id']).each do |item|
           invoice.add_item item
         end
-        yield invoice
+        yield invoice if block_given?
+        invoices << invoice if !block_given?
       end
+
+      return invoices if !block_given?
     end
 
     def self.invoice invoice_nr, calculation_conf=nil
@@ -22,21 +28,21 @@ module Maprofit::Magento
 
       invoice = invoice_from_sql_result invoice_sql
 
-      items_for_order(invoice_sql['order_id']).each do |item|
+      invoice_items_for_order(invoice_sql['order_id']).each do |item|
         invoice.add_item item
       end
 
       invoice
     end
 
-    def self.items_for_invoice invoice_nr
+    def self.invoice_items_for_invoice invoice_nr
       # Fetch EK attr
       invoice = Maprofit::Magento::SQL.sales_invoice invoice_nr
       #ap invoice.first
-      items_for_order invoice.first['order_id']
+      invoice_items_for_order invoice.first['order_id']
     end
 
-    def self.items_for_order order_id
+    def self.invoice_items_for_order order_id
       items = Maprofit::Magento::SQL.sales_invoice_items_for order_id
 
       items.map do |item_sql|
