@@ -80,7 +80,7 @@ module Maprofit::Magento
 
     # varchar attribute for product
     def self.eav_attr_for product_id, attr_id
-      query = client.prepare
+      query = client.prepare(
         "
          SELECT * FROM catalog_product_entity_varchar
          WHERE attribute_id = ?
