@@ -29,7 +29,7 @@ module Maprofit::Magento
     end
 
     def self.sales_order_items_for order_id
-      client.prepare(
+      query = client.prepare(
         "
          SELECT * FROM sales_order_item
          WHERE order_id = ?
